@@ -1,3 +1,4 @@
+export const revalidate = 60;
 import Navbar from "./components/layout/Navbar";
 import Hero from "./components/hero/Hero"
 import Ticker from "./components/layout/Ticker";
@@ -15,7 +16,6 @@ import {
   heroQuery,
   blogsQuery
 } from "./lib/sanity/queries";
-
 
 export default async function HomePage() {
   const heroData =
