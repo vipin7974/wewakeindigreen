@@ -2,106 +2,86 @@
 
 import Image from "next/image";
 
+import Link from "next/link";
+
 import { motion } from "framer-motion";
 
 import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 
-const featured = {
-  image:
-    "https://images.unsplash.com/photo-1573246123716-6b1782bfc499?w=1200&q=80",
+import { format } from "date-fns";
 
-  tag: "Featured",
+import { urlFor } from "@/app/lib/sanity/image";
 
-  date: "March 18, 2026 · 8 min read",
+type Blog = {
+  _id: string;
 
-  title:
-    "How 10,376 Tonnes of Daily Plastic Waste Became Our Founding Story",
+  title: string;
 
-  excerpt:
-    "When Dr. Aniruddha Deshpande first saw India's plastic waste data, he didn't see garbage — he saw a design problem waiting for an engineering solution.",
+  excerpt: string;
 
-  featured: true,
+  coverImage?: any;
+
+  externalCoverImage?: string;
+
+  tag: string;
+
+  featured: boolean;
+
+  readTime: string;
+
+  publishedAt: string;
+
+  slug: {
+    current: string;
+  };
 };
 
-const articles = [
-  {
-    image:
-      "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=900&q=80",
+type BlogSectionProps = {
+  blogs: Blog[];
+};
 
-    tag: "Agro Tech",
+export default function BlogSection({
+  blogs,
+}: BlogSectionProps) {
+  const validBlogs =
+    blogs.filter(
+      (blog) =>
+        blog?.slug?.current
+    );
 
-    date: "February 5, 2026 · 5 min",
+  if (!validBlogs.length) {
+    return null;
+  }
 
-    title:
-      "Why Farmers Are Our Most Valuable Partners",
+  const featured =
+    validBlogs.find(
+      (blog) => blog.featured
+    ) || validBlogs[0];
 
-    excerpt:
-      "India generates 500M tonnes of crop residue yearly. Most is burned.",
+  const articles =
+    validBlogs.filter(
+      (blog) =>
+        blog._id !== featured._id
+    );
 
-    size: "medium",
-  },
+  const getImageSrc = (
+    blog: Blog
+  ) => {
+    if (blog?.coverImage) {
+      return urlFor(
+        blog.coverImage
+      ).url();
+    }
 
-  {
-    image:
-      "https://images.unsplash.com/photo-1576086213369-97a306d36557?w=900&q=80",
+    if (
+      blog?.externalCoverImage
+    ) {
+      return blog.externalCoverImage;
+    }
 
-    tag: "Science",
+    return "/images/blog-fallback.jpg";
+  };
 
-    date: "January 12, 2026 · 6 min",
-
-    title:
-      "What Happens When BioMANS Decomposes — The Lab Data",
-
-    excerpt:
-      "Complete breakdown, zero toxic residue, measurably higher nitrogen post-compost.",
-
-    size: "medium",
-  },
-
-  {
-    image:
-      "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=900&q=80",
-
-    tag: "Water Tech",
-
-    date: "December 2, 2025 · 4 min",
-
-    title:
-      "The Water Crisis No One Is Talking About in India",
-
-    size: "small",
-  },
-
-  {
-    image:
-      "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=900&q=80",
-
-    tag: "Awards",
-
-    date: "November 14, 2025 · 3 min",
-
-    title:
-      "WIGPL at TEDxDBATU — Cleaning Our Ways",
-
-    size: "small",
-  },
-
-  {
-    image:
-      "https://images.unsplash.com/photo-1560472355-536de3962603?w=900&q=80",
-
-    tag: "Market",
-
-    date: "October 28, 2025 · 5 min",
-
-    title:
-      "India's Biodegradable Packaging Market Will Hit ₹12,000 Cr by 2028",
-
-    size: "small",
-  },
-];
-
-export default function BlogSection() {
   return (
     <section
       id="blog"
@@ -148,8 +128,6 @@ export default function BlogSection() {
             gap-10
           "
         >
-          {/* LEFT */}
-
           <motion.div
             initial={{
               opacity: 0,
@@ -159,7 +137,9 @@ export default function BlogSection() {
               opacity: 1,
               y: 0,
             }}
-            transition={{ duration: 0.7 }}
+            transition={{
+              duration: 0.7,
+            }}
             viewport={{ once: true }}
           >
             {/* EYEBROW */}
@@ -216,20 +196,8 @@ export default function BlogSection() {
 
           {/* CTA */}
 
-          <motion.button
-            initial={{
-              opacity: 0,
-              y: 30,
-            }}
-            whileInView={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              duration: 0.6,
-              delay: 0.1,
-            }}
-            viewport={{ once: true }}
+          <Link
+            href="/blog"
             className="blog-see-all"
           >
             All articles
@@ -237,7 +205,7 @@ export default function BlogSection() {
             <ArrowOutwardIcon
               sx={{ fontSize: 16 }}
             />
-          </motion.button>
+          </Link>
         </div>
 
         {/* GRID */}
@@ -252,228 +220,190 @@ export default function BlogSection() {
         >
           {/* FEATURED */}
 
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 50,
-            }}
-            whileInView={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{ duration: 0.7 }}
-            viewport={{ once: true }}
-            className="
-              blog-featured-card
-              group
-            "
+          <Link
+            href={`/blog/${featured.slug.current}`}
           >
-            {/* IMAGE */}
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: 50,
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                duration: 0.7,
+              }}
+              viewport={{ once: true }}
+              className="
+                blog-featured-card
+                group
+              "
+            >
+              {/* IMAGE */}
 
-            <div className="blog-featured-image">
-              <Image
-                fill
-                src={featured.image}
-                alt={featured.title}
-                className="
-                  object-cover
-                  transition-transform
-                  duration-700
-                  group-hover:scale-105
-                "
-              />
-
-              <div className="blog-image-overlay" />
-
-              <div className="blog-tag">
-                {featured.tag}
-              </div>
-            </div>
-
-            {/* BODY */}
-
-            <div className="blog-body">
-              <div className="blog-date">
-                {featured.date}
-              </div>
-
-              <h3 className="blog-featured-title">
-                {featured.title}
-              </h3>
-
-              <p className="blog-excerpt">
-                {featured.excerpt}
-              </p>
-
-              <button className="blog-read-btn">
-                Read full story
-
-                <ArrowOutwardIcon
-                  sx={{ fontSize: 16 }}
+              <div className="blog-featured-image">
+                <Image
+                  fill
+                  alt={featured.title}
+                  src={getImageSrc(
+                    featured
+                  )}
+                  className="
+                    object-cover
+                    transition-transform
+                    duration-700
+                    group-hover:scale-105
+                  "
                 />
-              </button>
-            </div>
 
-            <div className="blog-hover-glow" />
-          </motion.div>
+                <div className="blog-image-overlay" />
 
-          {/* SIDE ARTICLES */}
+                <div className="blog-tag">
+                  {featured.tag}
+                </div>
+              </div>
+
+              {/* BODY */}
+
+              <div className="blog-body">
+                <div className="blog-date">
+                  {format(
+                    new Date(
+                      featured.publishedAt
+                    ),
+                    "MMMM dd, yyyy"
+                  )}{" "}
+                  ·{" "}
+                  {featured.readTime}
+                </div>
+
+                <h3 className="blog-featured-title">
+                  {featured.title}
+                </h3>
+
+                <p className="blog-excerpt">
+                  {featured.excerpt}
+                </p>
+
+                <button className="blog-read-btn">
+                  Read full story
+
+                  <ArrowOutwardIcon
+                    sx={{
+                      fontSize: 16,
+                    }}
+                  />
+                </button>
+              </div>
+
+              <div className="blog-hover-glow" />
+            </motion.div>
+          </Link>
+
+          {/* SIDE */}
 
           <div className="grid gap-8">
-            {articles.slice(0, 2).map(
-              (item, index) => (
-                <motion.div
-                  key={item.title}
-                  initial={{
-                    opacity: 0,
-                    y: 40,
-                  }}
-                  whileInView={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  transition={{
-                    duration: 0.6,
-                    delay: index * 0.1,
-                  }}
-                  viewport={{ once: true }}
-                  className="
-                    blog-card
-                    group
-                  "
-                >
-                  {/* IMAGE */}
-
-                  <div className="blog-card-image">
-                    <Image
-                      fill
-                      src={item.image}
-                      alt={item.title}
+            {articles
+              .slice(0, 2)
+              .map(
+                (
+                  item,
+                  index
+                ) => (
+                  <Link
+                    key={item._id}
+                    href={`/blog/${item.slug.current}`}
+                  >
+                    <motion.div
+                      initial={{
+                        opacity: 0,
+                        y: 40,
+                      }}
+                      whileInView={{
+                        opacity: 1,
+                        y: 0,
+                      }}
+                      transition={{
+                        duration: 0.6,
+                        delay:
+                          index *
+                          0.1,
+                      }}
+                      viewport={{
+                        once: true,
+                      }}
                       className="
-                        object-cover
-                        transition-transform
-                        duration-700
-                        group-hover:scale-105
+                        blog-card
+                        group
                       "
-                    />
+                    >
+                      {/* IMAGE */}
 
-                    <div className="blog-image-overlay" />
+                      <div className="blog-card-image">
+                        <Image
+                          fill
+                          alt={
+                            item.title
+                          }
+                          src={getImageSrc(
+                            item
+                          )}
+                          className="
+                            object-cover
+                            transition-transform
+                            duration-700
+                            group-hover:scale-105
+                          "
+                        />
 
-                    <div className="blog-tag">
-                      {item.tag}
-                    </div>
-                  </div>
+                        <div className="blog-image-overlay" />
 
-                  {/* BODY */}
+                        <div className="blog-tag">
+                          {item.tag}
+                        </div>
+                      </div>
 
-                  <div className="blog-body">
-                    <div className="blog-date">
-                      {item.date}
-                    </div>
+                      {/* BODY */}
 
-                    <h3 className="blog-title">
-                      {item.title}
-                    </h3>
+                      <div className="blog-body">
+                        <div className="blog-date">
+                          {format(
+                            new Date(
+                              item.publishedAt
+                            ),
+                            "MMMM dd, yyyy"
+                          )}{" "}
+                          ·{" "}
+                          {
+                            item.readTime
+                          }
+                        </div>
 
-                    <p className="blog-excerpt-small">
-                      {item.excerpt}
-                    </p>
+                        <h3 className="blog-title">
+                          {
+                            item.title
+                          }
+                        </h3>
 
-                    <button className="blog-read-btn">
-                      Read
+                        <p className="blog-excerpt-small">
+                          {
+                            item.excerpt
+                          }
+                        </p>
 
-                      <ArrowOutwardIcon
-                        sx={{ fontSize: 16 }}
-                      />
-                    </button>
-                  </div>
+                        <button className="blog-read-btn">
+                          Read
+                        </button>
+                      </div>
 
-                  <div className="blog-hover-glow" />
-                </motion.div>
-              )
-            )}
+                      <div className="blog-hover-glow" />
+                    </motion.div>
+                  </Link>
+                )
+              )}
           </div>
-        </div>
-
-        {/* BOTTOM ROW */}
-
-        <div
-          className="
-            grid
-            md:grid-cols-2
-            xl:grid-cols-3
-            gap-8
-            mt-8
-          "
-        >
-          {articles.slice(2).map(
-            (item, index) => (
-              <motion.div
-                key={item.title}
-                initial={{
-                  opacity: 0,
-                  y: 40,
-                }}
-                whileInView={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                transition={{
-                  duration: 0.6,
-                  delay: index * 0.08,
-                }}
-                viewport={{ once: true }}
-                className="
-                  blog-card
-                  group
-                "
-              >
-                {/* IMAGE */}
-
-                <div className="blog-card-image small">
-                  <Image
-                    fill
-                    src={item.image}
-                    alt={item.title}
-                    className="
-                      object-cover
-                      transition-transform
-                      duration-700
-                      group-hover:scale-105
-                    "
-                  />
-
-                  <div className="blog-image-overlay" />
-
-                  <div className="blog-tag">
-                    {item.tag}
-                  </div>
-                </div>
-
-                {/* BODY */}
-
-                <div className="blog-body">
-                  <div className="blog-date">
-                    {item.date}
-                  </div>
-
-                  <h3 className="blog-title">
-                    {item.title}
-                  </h3>
-
-                  <button className="blog-read-btn">
-                    Read
-
-                    <ArrowOutwardIcon
-                      sx={{ fontSize: 16 }}
-                    />
-                  </button>
-                </div>
-
-                <div className="blog-hover-glow" />
-              </motion.div>
-            )
-          )}
         </div>
       </div>
     </section>

@@ -1,30 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
+import StoryOrbit from './StoryOrbit'
 
-const challenges = [
-  {
-    icon: "🗻",
-    title: "Plastic Waste Crisis",
-    body:
-      "India generates over 10,376 tonnes of plastic waste every single day. Single-use plastics choke our land, waterways, and ecosystems — demanding an immediate, scalable alternative.",
-    stat: "⬆ 10,376 T/D — Daily Plastic Waste (India)",
-  },
-  {
-    icon: "💧",
-    title: "Water Scarcity",
-    body:
-      "Water scarcity already affects every continent. By 2030, 700 million people could be displaced by intense water scarcity. Can we save water for the next generation through smart recycling and reuse?",
-    stat: "700 Million — People at Risk by 2030",
-  },
-  {
-    icon: "🌱",
-    title: "Agricultural Waste",
-    body:
-      "Millions of tonnes of crop residue go unutilised or burned after harvesting, releasing greenhouse gases. We transform this agricultural waste into high-value biobased materials.",
-    stat: "♻ Agro-Waste → BioMANS Material",
-  },
-];
 
 export default function Story() {
   return (
@@ -152,68 +130,15 @@ export default function Story() {
         {/* GRID */}
 
         <div
-          className="
-            mt-20
-            grid
-            gap-8
-            lg:grid-cols-3
-          "
-        >
-          {challenges.map((item, index) => (
-            <motion.div
-              key={item.title}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.6,
-                delay: index * 0.12,
-              }}
-              viewport={{ once: true }}
-              className="
-                story-card
-                group
-              "
-            >
-              {/* TOP */}
-
-              <div
-                className="
-                  flex
-                  items-center
-                  justify-between
-                "
-              >
-                <div className="story-icon">
-                  {item.icon}
-                </div>
-
-                <div className="story-card-line" />
-              </div>
-
-              {/* TITLE */}
-
-              <h3 className="story-card-title">
-                {item.title}
-              </h3>
-
-              {/* BODY */}
-
-              <p className="story-card-body">
-                {item.body}
-              </p>
-
-              {/* STAT */}
-
-              <div className="story-card-stat">
-                {item.stat}
-              </div>
-
-              {/* HOVER GLOW */}
-
-              <div className="story-card-hover" />
-            </motion.div>
-          ))}
-        </div>
+  className="
+    mt-20
+    flex
+    justify-center
+    items-center
+  "
+>
+  <StoryOrbit />
+</div>
       </div>
     </section>
   );

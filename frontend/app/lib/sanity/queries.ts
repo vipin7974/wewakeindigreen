@@ -8,3 +8,53 @@ export const heroQuery = groq`
     subtitle
   }
 `;
+
+export const blogsQuery = groq`
+  *[_type == "blog"]
+  | order(publishedAt desc) {
+    _id,
+
+    title,
+
+    slug,
+
+    excerpt,
+
+    coverImage,
+
+    featured,
+
+    tag,
+
+    readTime,
+
+    publishedAt
+  }
+`;
+
+export const singleBlogQuery = groq`
+  *[
+    _type == "blog" &&
+    slug.current == $slug
+  ][0]{
+    _id,
+
+    title,
+
+    slug,
+
+    excerpt,
+
+    coverImage,
+
+    featured,
+
+    tag,
+
+    readTime,
+
+    publishedAt,
+
+    content
+  }
+`;

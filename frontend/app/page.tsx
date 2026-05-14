@@ -13,12 +13,17 @@ import Footer from "./components/footer/Footer";
 import { client } from "./lib/sanity/client";
 import {
   heroQuery,
+  blogsQuery
 } from "./lib/sanity/queries";
 
 
 export default async function HomePage() {
   const heroData =
     await client.fetch(heroQuery);
+    const blogs =
+    await client.fetch(
+      blogsQuery
+    );
   return (
     <main>
       <Navbar />
@@ -29,7 +34,7 @@ export default async function HomePage() {
        <Biom/>
        <ProductsSection/>
        <SdgSection/>
-       <BlogSection/>
+       <BlogSection blogs={blogs}/>
        <VisionMissionSection/>
        <ContactSection/>
        <Footer/>
