@@ -1,235 +1,113 @@
 "use client";
 
-import Link from "next/link";
+/**
+ * FOOTER
+ * --------------------------------------------------------------
+ * Brand block + link columns + bottom bar. Every column, link,
+ * line of copy comes from Sanity (`footer` doc).
+ *
+ * Anchor links smooth-scroll to in-page sections.
+ */
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 
-const footerLinks = [
-  {
-    title: "Company",
+import { FooterData } from "@/app/lib/sanity/types";
+import { footerFallback, withFallback } from "@/app/lib/sanity/fallbacks";
+import { scrollToHash } from "@/app/lib/util";
 
-    links: [
-      {
-        label: "About Us",
-        href: "#about",
-      },
+type Props = { data?: FooterData | null };
 
-      {
-        label: "Vision & Mission",
-        href: "#vision",
-      },
+export default function Footer({ data }: Props) {
+  const footer = withFallback(data, footerFallback);
 
-      {
-        label: "Our Team",
-        href: "#team",
-      },
+  // Smooth-scroll for `#anchor` links.
+  const onLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href?: string
+  ) => {
+    if (href?.startsWith("#")) {
+      e.preventDefault();
+      scrollToHash(href);
+    }
+  };
 
-      {
-        label: "Contact",
-        href: "#contact",
-      },
-    ],
-  },
-
-  {
-    title: "Technology",
-
-    links: [
-      {
-        label: "BioMANS",
-        href: "#products",
-      },
-
-      {
-        label: "SDG Goals",
-        href: "#sdg",
-      },
-
-      {
-        label: "Plastic Crisis",
-        href: "#plastic",
-      },
-    ],
-  },
-
-  {
-    title: "Insights",
-
-    links: [
-      {
-        label: "Blog",
-        href: "#blog",
-      },
-
-      {
-        label: "Research",
-        href: "#blog",
-      },
-
-      {
-        label: "Case Studies",
-        href: "#blog",
-      },
-
-      {
-        label: "Press",
-        href: "#blog",
-      },
-    ],
-  },
-];
-
-export default function Footer() {
   return (
     <>
       <footer className="footer-section">
-        {/* GRID */}
-
+        {/* GRID + decoration */}
         <div className="footer-grid-lines" />
-
-        {/* GLOW */}
-
         <div className="footer-glow-1" />
         <div className="footer-glow-2" />
-
-        {/* FLOATING BOXES */}
-
         <div className="footer-box box-1" />
         <div className="footer-box box-2" />
 
-        <div
-          className="
-            relative
-            z-10
-            max-w-[1320px]
-            mx-auto
-            px-6
-            lg:px-20
-          "
-        >
-          <div
-            className="
-              grid
-              gap-16
-              lg:grid-cols-[1.2fr_0.8fr_0.8fr_0.8fr]
-            "
-          >
-            {/* LEFT */}
-
+        <div className="relative z-10 max-w-[1320px] mx-auto px-6 lg:px-20">
+          <div className="grid gap-12 lg:gap-16 lg:grid-cols-[1.2fr_0.8fr_0.8fr_0.8fr]">
+            {/* LEFT — brand block */}
             <motion.div
-              initial={{
-                opacity: 0,
-                y: 30,
-              }}
-              whileInView={{
-                opacity: 1,
-                y: 0,
-              }}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
+              viewport={{ once: false, amount: 0.05 }}
             >
-              {/* LOGO */}
-
+              {/* Logo + brand name (CMS) */}
               <Link
                 href="/"
                 className="footer-logo"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (typeof window !== "undefined") {
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }
+                }}
               >
                 <div className="footer-logo-gem">
                   <div className="footer-logo-inner" />
                 </div>
-
-                <span>
-                  WeWake IndiGreen
-                </span>
+                <span>{footer.brandName}</span>
               </Link>
 
-              {/* TAGLINE */}
+              {/* Tagline (CMS) */}
+              <p className="footer-tagline">{footer.tagline}</p>
 
-              <p className="footer-tagline">
-                With innovative technologies,
-                let&apos;s change the world
-                together for blissful
-                mother-Earth.
-              </p>
-
-              {/* COPY */}
-
-              <div className="footer-copy">
-                © 2026 WIGPL · All rights
-                reserved
-              </div>
+              {/* Copyright (CMS) */}
+              <div className="footer-copy">{footer.copyright}</div>
             </motion.div>
 
-            {/* LINKS */}
-
-            {footerLinks.map(
-              (column, index) => (
-                <motion.div
-                  key={column.title}
-                  initial={{
-                    opacity: 0,
-                    y: 30,
-                  }}
-                  whileInView={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  transition={{
-                    duration: 0.6,
-                    delay: index * 0.08,
-                  }}
-                  viewport={{ once: true }}
-                >
-                  <div className="footer-column-title">
-                    {column.title}
-                  </div>
-
-                  <ul className="footer-links">
-                    {column.links.map((item) => (
-                      <li key={item.label}>
-                        <a href={item.href}>
-                          {item.label}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </motion.div>
-              )
-            )}
+            {/* LINK columns (CMS) */}
+            {(footer.columns ?? []).map((column, index) => (
+              <motion.div
+                key={column.title ?? index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.08 }}
+                viewport={{ once: false, amount: 0.05 }}
+              >
+                <div className="footer-column-title">{column.title}</div>
+                <ul className="footer-links">
+                  {(column.links ?? []).map((item) => (
+                    <li key={`${item.label}-${item.href}`}>
+                      <a
+                        href={item.href ?? "#"}
+                        onClick={(e) => onLinkClick(e, item.href)}
+                      >
+                        {item.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            ))}
           </div>
         </div>
       </footer>
 
       {/* BOTTOM BAR */}
-
       <div className="footer-bottom-bar">
-        <div
-          className="
-            max-w-[1320px]
-            mx-auto
-            px-6
-            lg:px-20
-            flex
-            flex-col
-            lg:flex-row
-            items-center
-            justify-between
-            gap-6
-          "
-        >
-          {/* TEXT */}
-
-          <div className="footer-bottom-text">
-            WIGPL · Pune, Maharashtra,
-            India · Clean Tech & Deep Tech
-            · Brand colour #4E2F8E
-          </div>
-
-          {/* BADGE */}
-
-          <div className="footer-india-badge">
-            🇮🇳 Proudly Make in India
-          </div>
+        <div className="max-w-[1320px] mx-auto px-6 lg:px-20 flex flex-col lg:flex-row items-center justify-between gap-6">
+          <div className="footer-bottom-text">{footer.bottomText}</div>
+          <div className="footer-india-badge">{footer.bottomBadge}</div>
         </div>
       </div>
     </>

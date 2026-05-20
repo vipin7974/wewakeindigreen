@@ -1,33 +1,34 @@
-export default function Ticker() {
-  const items = [
-    "8.3 Billion tonnes of plastic produced since 1950",
-    "91% of plastic waste is never recycled",
-    "Plastic takes over 450 years to decompose",
-    "BioMANS biodegrades within 21 days",
-    "Agricultural waste can replace plastic",
-    "Circular materials are the future",
-  ];
+/**
+ * TICKER
+ * --------------------------------------------------------------
+ * Auto-scrolling factoid strip. Items come from Sanity (`ticker`
+ * document). Falls back to a default list of facts when empty.
+ *
+ * Items are duplicated in render so the CSS marquee can loop
+ * seamlessly without a JS frame loop.
+ */
+import { TickerData } from "@/app/lib/sanity/types";
+import { tickerFallback, withFallback } from "@/app/lib/sanity/fallbacks";
+
+type Props = { data?: TickerData | null };
+
+export default function Ticker({ data }: Props) {
+  const t = withFallback(data, tickerFallback);
+  const items = t.items ?? [];
 
   return (
     <section className="ticker-wrap">
       {/* LEFT FADE */}
-
       <div className="ticker-fade-left" />
 
       {/* RIGHT FADE */}
-
       <div className="ticker-fade-right" />
 
-      {/* TRACK */}
-
+      {/* TRACK — items duplicated to allow looped marquee */}
       <div className="ticker-track">
         {[...items, ...items].map((item, index) => (
-          <div
-            key={index}
-            className="ticker-item"
-          >
+          <div key={index} className="ticker-item">
             <span className="ticker-dot" />
-
             <span>{item}</span>
           </div>
         ))}
