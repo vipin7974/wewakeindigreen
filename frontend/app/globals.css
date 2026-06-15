@@ -3638,7 +3638,8 @@ body::after {
    transitions cleanly into the next section without white space.
 ========================= */
 
-/* STATS row — sits between the message and the marquee */
+/* STATS row — sits between the message and the marquee.
+   Borders + label colours flipped for the dark section surface. */
 .contributors-stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -3646,8 +3647,8 @@ body::after {
   margin: 40px auto 0;
   padding: 28px 0;
   gap: 16px;
-  border-top: 1px solid rgba(96,64,168,0.10);
-  border-bottom: 1px solid rgba(96,64,168,0.10);
+  border-top: 1px solid rgba(255,255,255,0.10);
+  border-bottom: 1px solid rgba(255,255,255,0.10);
 }
 
 .contributors-stat        { text-align: center; }
@@ -3656,7 +3657,8 @@ body::after {
   line-height: 1;
   font-weight: 900;
   letter-spacing: -0.04em;
-  color: #4e2f8e;
+  /* Soft mint accent so the number pops on the dark surface */
+  color: #95d5b2;
 }
 .contributors-stat-label  {
   margin-top: 10px;
@@ -3664,7 +3666,7 @@ body::after {
   font-weight: 700;
   letter-spacing: 0.20em;
   text-transform: uppercase;
-  color: rgba(26,15,48,0.55);
+  color: rgba(255,255,255,0.60);
 }
 
 @media (max-width: 640px) {
@@ -3681,19 +3683,16 @@ body::after {
    all the chrome it needs.
 ========================= */
 
-/* MARQUEE BAR */
+/* MARQUEE BAR — LIGHT theme on a DARK section.
+   Uses the brand cream `#faf8fd` so the bar visually echoes the page
+   surface elsewhere. Top + bottom hairlines in light brand purple. */
 .contributors-ticker {
   position: relative;
   overflow: hidden;
   padding: 18px 0;
-  background:
-    linear-gradient(
-      90deg,
-      #4e2f8e 0%,
-      #6040a8 40%,
-      #40916c 100%
-    );
-  border-top: 1px solid rgba(255,255,255,0.10);
+  background: #faf8fd;
+  border-top: 1px solid #dfd4f5;
+  border-bottom: 1px solid #dfd4f5;
 }
 
 /* Track scrolls -50% so the duplicated list yields a seamless loop.
@@ -3709,7 +3708,7 @@ body::after {
   animation-play-state: paused;    /* let the user click / read */
 }
 
-/* Edge fades — gradient bleeds into nothing at each side */
+/* Edge fades — bleed into the cream so pills slide into nothing */
 .contributors-ticker-fade {
   position: absolute;
   top: 0;
@@ -3718,18 +3717,18 @@ body::after {
   z-index: 2;
   pointer-events: none;
 }
-.contributors-ticker-fade.left  { left:  0; background: linear-gradient(to right, #4e2f8e, transparent); }
-.contributors-ticker-fade.right { right: 0; background: linear-gradient(to left,  #40916c, transparent); }
+.contributors-ticker-fade.left  { left:  0; background: linear-gradient(to right, #faf8fd, transparent); }
+.contributors-ticker-fade.right { right: 0; background: linear-gradient(to left,  #faf8fd, transparent); }
 
 /* ITEM (link or span — both behave identically) */
 .contributor-link {
   text-decoration: none;
-  color: white;
+  color: #1a0f30;
   white-space: nowrap;
-  transition: opacity 0.25s ease;
+  transition: opacity 0.25s ease, color 0.25s ease;
   opacity: 0.85;
 }
-.contributor-link:hover { opacity: 1; }
+.contributor-link:hover { opacity: 1; color: #4e2f8e; }
 
 .contributor-item {
   display: inline-flex;
@@ -3737,7 +3736,7 @@ body::after {
   gap: 12px;
 }
 
-/* Small round logo bubble — keeps logos legible on the gradient */
+/* Small round logo bubble — pale brand tint so any logo reads well */
 .contributor-logo {
   position: relative;
   width: 36px;
@@ -3745,6 +3744,7 @@ body::after {
   flex-shrink: 0;
   border-radius: 9999px;
   background: #ffffff;
+  border: 1px solid #dfd4f5;
   overflow: hidden;
   display: inline-flex;
   align-items: center;
@@ -3759,12 +3759,12 @@ body::after {
   color: #4e2f8e;
 }
 
-/* NAME — clean title-case body text */
+/* NAME — clean title-case body text in deep brand ink */
 .contributor-name {
   font-size: 15px;
   font-weight: 600;
   letter-spacing: 0.01em;
-  color: white;
+  color: #1a0f30;
 }
 
 /* Phones: smaller everything */

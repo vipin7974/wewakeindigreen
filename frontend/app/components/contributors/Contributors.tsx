@@ -7,10 +7,14 @@
  * a continuously-running marquee of partner brands.
  *
  * Design notes:
+ *   - Section background uses the brand dark shade `#12091f` so it
+ *     pairs visually with Story / Vision / Mission. Sitting between
+ *     Team (light) and Vision (dark), it serves as a clean transition.
+ *   - The marquee strip itself is *light* (cream / white) — inverting
+ *     the surrounding dark surface so the partner names read crisply
+ *     and the bar feels like a deliberate slice of light.
  *   - The section ends at the marquee bar with no bottom padding,
- *     so the next (SDG) section starts immediately. No white gap.
- *   - Each item in the marquee is just a logo + name — no glass
- *     pill, no extra chrome.
+ *     so the next (Vision) section starts immediately.
  */
 
 import Image from "next/image";
@@ -60,23 +64,25 @@ export default function Contributors({ section, contributors }: Props) {
   return (
     <section
       id="contributors"
-      // Top padding only — marquee meets the next section flush.
-      className="relative overflow-hidden pt-14 lg:pt-20 bg-white"
+      // Dark surface — same shade as Story / Vision so the page
+      // breathes between light + dark sections. Top padding only so
+      // the light marquee bar meets the next section flush.
+      className="relative overflow-hidden pt-14 lg:pt-20 bg-[#12091f]"
     >
       <div className="relative z-10 max-w-[1100px] mx-auto px-6 lg:px-20">
-        {/* Editorial header */}
+        {/* Editorial header — colours flipped for the dark surface */}
         <div className="max-w-[720px] mx-auto text-center">
-          <div className="inline-flex items-center gap-3 rounded-full border border-[#dfd4f5] bg-[#f3effe] px-5 py-2 text-[11px] uppercase tracking-[0.25em] text-[#4E2F8E]">
-            <div className="w-2 h-2 rounded-full bg-[#6040a8] animate-pulse" />
+          <div className="inline-flex items-center gap-3 rounded-full border border-[#6040a8]/25 bg-[#6040a8]/10 px-5 py-2 text-[11px] uppercase tracking-[0.25em] text-[#c0a8e8]">
+            <div className="w-2 h-2 rounded-full bg-[#95d5b2] animate-pulse" />
             {sec.eyebrow}
           </div>
 
-          <h2 className="mt-6 text-[26px] sm:text-[32px] lg:text-[40px] leading-[1.15] tracking-[-0.03em] text-[#1a0f30] font-black">
+          <h2 className="mt-6 text-[26px] sm:text-[32px] lg:text-[40px] leading-[1.15] tracking-[-0.03em] text-white font-black">
             {sec.title}
           </h2>
 
           {sec.message && (
-            <p className="mt-4 sm:mt-5 text-sm sm:text-base leading-[1.8] text-[#1a0f30]/65">
+            <p className="mt-4 sm:mt-5 text-sm sm:text-base leading-[1.8] text-white/65">
               {sec.message}
             </p>
           )}
