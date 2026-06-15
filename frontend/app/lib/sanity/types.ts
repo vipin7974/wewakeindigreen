@@ -33,6 +33,13 @@ export type SiteSettings = {
   gfEmailEntry?: string;
   gfTopicEntry?: string;
   gfMessageEntry?: string;
+
+  // SEO defaults.
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeywords?: string[];
+  ogImage?: ImageOrUrl;
+  siteUrl?: string;
 };
 
 export type NavbarData = {
@@ -94,7 +101,12 @@ export type BiomData = {
   paragraph2?: string;
   features?: string[];
   rawMaterialsTitle?: string;
-  rawMaterials?: { icon?: string; title?: string; desc?: string }[];
+  rawMaterials?: {
+    icon?: string;
+    title?: string;
+    desc?: string;
+    image?: ImageOrUrl;
+  }[];
 };
 
 export type Product = {
@@ -140,6 +152,35 @@ export type BlogSectionData = {
   title?: string;
   ctaLabel?: string;
   ctaHref?: string;
+};
+
+export type ContributorsSectionData = {
+  eyebrow?: string;
+  title?: string;
+  message?: string;
+  stats?: { value?: string; label?: string }[];
+};
+
+export type Contributor = {
+  _id?: string;
+  name?: string;
+  url?: string;
+  logo?: ImageOrUrl;
+};
+
+export type TeamSectionData = {
+  eyebrow?: string;
+  title?: string;
+  description?: string;
+};
+
+export type TeamMember = {
+  _id?: string;
+  name?: string;
+  role?: string;
+  bio?: string;
+  photo?: ImageOrUrl;
+  socials?: { platform?: string; url?: string }[];
 };
 
 export type VisionMissionData = {

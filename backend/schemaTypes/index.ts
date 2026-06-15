@@ -30,6 +30,10 @@ import visionMission from './visionMission'
 import contact from './contact'
 import footer from './footer'
 import blog from './blog'
+import teamSection from './teamSection'
+import teamMember from './teamMember'
+import contributorsSection from './contributorsSection'
+import contributor from './contributor'
 
 export const schemaTypes = [
   // Shared objects must be registered too.
@@ -50,6 +54,10 @@ export const schemaTypes = [
   productsSection,
   sdgSection,
   blogSection,
+  teamSection,
+  teamMember,
+  contributorsSection,
+  contributor,
   visionMission,
   contact,
   footer,

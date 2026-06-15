@@ -53,6 +53,43 @@ export default defineType({
     defineField({name: 'gfEmailEntry', title: 'Email entry ID', type: 'string'}),
     defineField({name: 'gfTopicEntry', title: 'Topic entry ID', type: 'string'}),
     defineField({name: 'gfMessageEntry', title: 'Message entry ID', type: 'string'}),
+
+    /* ──────────────── SEO defaults ────────────────
+       Used by Next.js generateMetadata() across all pages.
+       Per-page metadata (e.g. blog post titles) override these.
+    */
+    defineField({
+      name: 'metaTitle',
+      title: 'Default meta title (SEO)',
+      type: 'string',
+      description: 'Browser tab / Google result title. Up to ~60 chars.',
+    }),
+    defineField({
+      name: 'metaDescription',
+      title: 'Default meta description (SEO)',
+      type: 'text',
+      rows: 3,
+      description: 'Snippet shown under the title in Google. ~150-160 chars.',
+    }),
+    defineField({
+      name: 'metaKeywords',
+      title: 'Keywords (SEO)',
+      type: 'array',
+      of: [{type: 'string'}],
+      options: {layout: 'tags'},
+    }),
+    defineField({
+      name: 'ogImage',
+      title: 'Default share image (OG/Twitter)',
+      type: 'imageOrUrl',
+      description: '1200×630 recommended. Used for Facebook, LinkedIn, Twitter previews.',
+    }),
+    defineField({
+      name: 'siteUrl',
+      title: 'Canonical site URL',
+      type: 'url',
+      description: 'https://www.wewakeindigreen.com',
+    }),
   ],
   preview: {prepare: () => ({title: 'Site Settings'})},
 })

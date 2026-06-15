@@ -1343,64 +1343,13 @@ body::after {
   color: #1a0f30;
 }
 
-/* RAW */
-
-.biom-raw-card {
-  padding: 42px;
-
-  border-radius: 36px;
-
-  border: 1px solid rgba(96,64,168,0.10);
-
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255,255,255,0.96),
-      rgba(243,239,254,0.70)
-    );
-
-  backdrop-filter: blur(18px);
-
-  box-shadow:
-    0 20px 60px rgba(96,64,168,0.08);
-
-  transition:
-    transform 0.35s ease,
-    box-shadow 0.35s ease;
-}
-
-.biom-raw-card:hover {
-  transform: translateY(-8px);
-
-  box-shadow:
-    0 40px 100px rgba(96,64,168,0.12);
-}
-
-.biom-raw-icon {
-  font-size: 54px;
-}
-
-.biom-raw-title {
-  margin-top: 22px;
-
-  font-size: 30px;
-
-  line-height: 1.1;
-
-  font-weight: 900;
-
-  letter-spacing: -0.04em;
-
-  color: #1a0f30;
-}
-
-.biom-raw-desc {
-  margin-top: 18px;
-
-  line-height: 1.95;
-
-  color: rgba(26,15,48,0.65);
-}
+/* RAW MATERIAL CARDS (legacy classes — kept empty intentionally)
+   --------------------------------------------------------------
+   The Biom section now reuses the .product-card styles to match
+   the Products grid exactly, so these classes are no longer
+   referenced. Leaving the rules removed prevents conflicting
+   styling if an old document still ships markup expecting them.
+*/
 
 /* PRODUCTS */
 
@@ -3476,37 +3425,23 @@ body::after {
   letter-spacing: -0.04em;
 }
 
-.footer-logo-gem {
+/* Real WeWake logo (image). Replaces the old gem placeholder. */
+.footer-logo-img {
   width: 58px;
   height: 58px;
-
-  border-radius: 18px 0 18px 0;
-
-  background:
-    linear-gradient(
-      135deg,
-      #6040a8,
-      #95d5b2
-    );
-
-  display: flex;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.96);
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-
-  box-shadow:
-    0 20px 60px rgba(96,64,168,0.30);
+  padding: 6px;
+  box-shadow: 0 20px 60px rgba(96,64,168,0.30);
 }
 
-.footer-logo-inner {
-  width: 22px;
-  height: 22px;
-
-  border-radius: 50% 0 50% 0;
-
-  transform: rotate(-45deg);
-
-  background: rgba(255,255,255,0.28);
-}
+/* Legacy gem placeholder kept harmless in case any older
+   document still references the class. */
+.footer-logo-gem,
+.footer-logo-inner { display: none; }
 
 /* TAGLINE */
 
@@ -3696,6 +3631,317 @@ body::after {
 }
 
 /* =========================
+   CONTRIBUTORS SECTION
+   --------------------------------------------------------------
+   A short editorial header + stats row + a slim gradient marquee.
+   The marquee bar sits flush at the bottom of the section so it
+   transitions cleanly into the next section without white space.
+========================= */
+
+/* STATS row — sits between the message and the marquee */
+.contributors-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  max-width: 760px;
+  margin: 40px auto 0;
+  padding: 28px 0;
+  gap: 16px;
+  border-top: 1px solid rgba(96,64,168,0.10);
+  border-bottom: 1px solid rgba(96,64,168,0.10);
+}
+
+.contributors-stat        { text-align: center; }
+.contributors-stat-value  {
+  font-size: 34px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  color: #4e2f8e;
+}
+.contributors-stat-label  {
+  margin-top: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  color: rgba(26,15,48,0.55);
+}
+
+@media (max-width: 640px) {
+  .contributors-stats        { gap: 8px; padding: 22px 0; margin-top: 28px; }
+  .contributors-stat-value   { font-size: 24px; }
+  .contributors-stat-label   { font-size: 10px; letter-spacing: 0.14em; margin-top: 6px; }
+}
+
+/* =========================
+   CONTRIBUTORS — slim marquee
+   --------------------------------------------------------------
+   Each item is a small white logo bubble + the company name in
+   clean title-case. No pill, no glass — the gradient bar is
+   all the chrome it needs.
+========================= */
+
+/* MARQUEE BAR */
+.contributors-ticker {
+  position: relative;
+  overflow: hidden;
+  padding: 18px 0;
+  background:
+    linear-gradient(
+      90deg,
+      #4e2f8e 0%,
+      #6040a8 40%,
+      #40916c 100%
+    );
+  border-top: 1px solid rgba(255,255,255,0.10);
+}
+
+/* Track scrolls -50% so the duplicated list yields a seamless loop.
+   Reuses the `tickerMove` keyframes already defined for the hero. */
+.contributors-track {
+  display: flex;
+  align-items: center;
+  gap: 56px;                       /* breathing room between items */
+  width: max-content;
+  animation: tickerMove 55s linear infinite;
+}
+.contributors-ticker:hover .contributors-track {
+  animation-play-state: paused;    /* let the user click / read */
+}
+
+/* Edge fades — gradient bleeds into nothing at each side */
+.contributors-ticker-fade {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 80px;
+  z-index: 2;
+  pointer-events: none;
+}
+.contributors-ticker-fade.left  { left:  0; background: linear-gradient(to right, #4e2f8e, transparent); }
+.contributors-ticker-fade.right { right: 0; background: linear-gradient(to left,  #40916c, transparent); }
+
+/* ITEM (link or span — both behave identically) */
+.contributor-link {
+  text-decoration: none;
+  color: white;
+  white-space: nowrap;
+  transition: opacity 0.25s ease;
+  opacity: 0.85;
+}
+.contributor-link:hover { opacity: 1; }
+
+.contributor-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Small round logo bubble — keeps logos legible on the gradient */
+.contributor-logo {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  background: #ffffff;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Initials fallback when no logo image is supplied */
+.contributor-initials {
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: #4e2f8e;
+}
+
+/* NAME — clean title-case body text */
+.contributor-name {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: white;
+}
+
+/* Phones: smaller everything */
+@media (max-width: 640px) {
+  .contributors-ticker { padding: 14px 0; }
+  .contributors-track  { gap: 36px; }
+  .contributor-logo    { width: 30px; height: 30px; }
+  .contributor-initials{ font-size: 11px; }
+  .contributor-name    { font-size: 13px; }
+  .contributors-ticker-fade { width: 48px; }
+}
+
+/* =========================
+   TEAM SECTION
+   --------------------------------------------------------------
+   Mirrors the brand language used in About / Products / Blog —
+   purple/cream surface, rounded cards, hover lift, soft glow.
+========================= */
+
+/* Subtle background grid + glow */
+.team-grid-lines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(96,64,168,0.04) 1px, transparent 1px),
+    linear-gradient(to right, rgba(96,64,168,0.04) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse at top, black 30%, transparent 80%);
+}
+.team-glow {
+  position: absolute;
+  top: -120px;
+  right: -120px;
+  width: 480px;
+  height: 480px;
+  border-radius: 9999px;
+  background:
+    radial-gradient(circle, rgba(96,64,168,0.12), transparent 60%);
+  filter: blur(60px);
+  pointer-events: none;
+}
+.team-box {
+  position: absolute;
+  border-radius: 24px;
+  background:
+    linear-gradient(135deg, rgba(96,64,168,0.06), rgba(64,145,108,0.04));
+  border: 1px solid rgba(96,64,168,0.08);
+  pointer-events: none;
+}
+.team-box.box-1 { width: 120px; height: 120px; top: 18%; left: 6%;  transform: rotate(-12deg); }
+.team-box.box-2 { width: 88px;  height: 88px;  top: 42%; right: 7%;  transform: rotate(20deg); }
+.team-box.box-3 { width: 64px;  height: 64px;  bottom: 18%; left: 22%; transform: rotate(-25deg); }
+
+/* CARD */
+.team-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 32px;
+  border: 1px solid rgba(96,64,168,0.10);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.98),
+      rgba(243,239,254,0.78)
+    );
+  backdrop-filter: blur(18px);
+  box-shadow: 0 20px 60px rgba(96,64,168,0.06);
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.team-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 40px 100px rgba(96,64,168,0.14);
+}
+
+/* PHOTO area — square aspect so members align cleanly */
+.team-photo {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;          /* taller-than-wide portrait */
+  overflow: hidden;
+  background: #f3effe;
+}
+
+.team-photo-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, transparent 60%, rgba(26,15,48,0.18));
+  pointer-events: none;
+}
+
+/* BODY */
+.team-body {
+  padding: 24px 24px 28px;
+}
+
+.team-name {
+  font-size: 22px;
+  line-height: 1.1;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  color: #1a0f30;
+}
+
+.team-role {
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #6040a8;
+}
+
+.team-bio {
+  margin-top: 14px;
+  font-size: 14px;
+  line-height: 1.75;
+  color: rgba(26,15,48,0.65);
+}
+
+/* SOCIAL CHIPS */
+.team-socials {
+  margin-top: 18px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.team-social-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9999px;
+  background: rgba(255,255,255,0.9);
+  border: 1px solid rgba(96,64,168,0.18);
+  color: #4e2f8e;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+.team-social-chip:hover {
+  background: #4e2f8e;
+  color: white;
+  border-color: #4e2f8e;
+  transform: translateY(-2px);
+}
+
+/* HOVER glow */
+.team-hover-glow {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(96,64,168,0.07),
+      transparent 60%
+    );
+}
+.team-card:hover .team-hover-glow { opacity: 1; }
+
+/* Responsive trim for phones */
+@media (max-width: 640px) {
+  .team-name { font-size: 20px; }
+  .team-body { padding: 20px 20px 22px; }
+  .team-bio { font-size: 13.5px; margin-top: 10px; }
+  .team-socials { margin-top: 14px; }
+}
+
+/* =========================
    RESPONSIVE OVERRIDES
    --------------------------------------------------------------
    These overrides at the BOTTOM of the file deliberately come
@@ -3784,7 +4030,9 @@ body::after {
 ========================= */
 .story-orbit-canvas-wrap {
   position: relative;
-  width: 760px;
+  /* The canvas is square. We cap the visible size based on viewport so
+     the orbit feels balanced on tablets and ultra-wide screens too. */
+  width: min(760px, 92vmin);
   max-width: 100%;
   aspect-ratio: 1 / 1;        /* lock it square so it never warps */
 }
@@ -3793,10 +4041,23 @@ body::after {
   height: 100%;
   display: block;
 }
+
+/* Discoverability hint shown under the canvas on desktop */
+.story-orbit-hint {
+  margin-top: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(192,168,232,0.65);
+  text-align: center;
+}
+
 .story-orbit-mobile { display: none; }    /* hidden by default (desktop) */
 
 @media (max-width: 768px) {
   .story-orbit-canvas-wrap { display: none; }   /* hide canvas */
+  .story-orbit-hint        { display: none; }
 
   .story-orbit-mobile {
     display: flex;

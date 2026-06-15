@@ -8,11 +8,13 @@
  * `biom` document, with sensible fallbacks.
  */
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import CheckIcon from "@mui/icons-material/Check";
 
 import { BiomData } from "@/app/lib/sanity/types";
 import { biomFallback, withFallback } from "@/app/lib/sanity/fallbacks";
+import { resolveImage } from "@/app/lib/sanity/image";
 import { splitTitle } from "@/app/lib/util";
 
 type Props = { data?: BiomData | null };
@@ -95,14 +97,59 @@ export default function Biom({ data }: Props) {
         {/* RAW MATERIALS */}
         <div className="mt-20 lg:mt-28">
           <h3 className="biom-subtitle">{biom.rawMaterialsTitle}</h3>
+
+          {/*
+           * RAW MATERIAL CARDS
+           * --------------------------------------------------------
+           * Visual language matches the Products section card —
+           *   image hero (320px) → "BioMANS" tag chip → body with
+           *   title + description.
+           * No emoji badge: the photograph of the actual material
+           * carries the visual weight.
+           */}
           <div className="grid md:grid-cols-2 gap-6 sm:gap-8 mt-8 lg:mt-10">
-            {(biom.rawMaterials ?? []).map((item) => (
-              <div key={item.title} className="biom-raw-card">
-                <div className="biom-raw-icon">{item.icon}</div>
-                <h4 className="biom-raw-title">{item.title}</h4>
-                <p className="biom-raw-desc">{item.desc}</p>
-              </div>
-            ))}
+            {(biom.rawMaterials ?? []).map((item, index) => {
+              // Resolve a usable image URL with a brand placeholder fallback.
+              const imgSrc = resolveImage(
+                item.image,
+                "/images/blog-fallback.jpg"
+              );
+
+              return (
+                <motion.div
+                  key={`${item.title}-${index}`}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.08 }}
+                  viewport={{ once: false, amount: 0.05 }}
+                  // Reuse the product-card classes so the design
+                  // is pixel-identical to the Products section.
+                  className="product-card group"
+                >
+                  {/* IMAGE HERO */}
+                  <div className="product-image-wrap">
+                    <Image
+                      fill
+                      src={imgSrc}
+                      alt={item.image?.alt ?? item.title ?? "Raw material"}
+                      sizes="(max-width: 768px) 100vw, 600px"
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="product-image-overlay" />
+                    <div className="product-tag">BioMANS</div>
+                  </div>
+
+                  {/* BODY — title + description */}
+                  <div className="product-body">
+                    <h4 className="product-title">{item.title}</h4>
+                    <p className="product-subtitle">{item.desc}</p>
+                  </div>
+
+                  {/* HOVER glow — same affordance as the Products grid */}
+                  <div className="product-hover-glow" />
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </div>

@@ -16,6 +16,8 @@ import {
   BiomData,
   BlogSectionData,
   ContactData,
+  Contributor,
+  ContributorsSectionData,
   FooterData,
   HeroData,
   NavbarData,
@@ -23,6 +25,8 @@ import {
   Product,
   SdgData,
   StoryData,
+  TeamMember,
+  TeamSectionData,
   TickerData,
   VisionMissionData,
   SiteSettings,
@@ -36,6 +40,7 @@ export const navbarFallback: NavbarData = {
     { label: "BioMANS", href: "#products" },
     { label: "SDG Goals", href: "#sdg" },
     { label: "Blog", href: "#blog" },
+    { label: "Team", href: "#team" },
     { label: "Vision", href: "#vision" },
   ],
   ctaLabel: "Contact Us",
@@ -163,14 +168,22 @@ export const biomFallback: BiomData = {
   rawMaterialsTitle: "Raw Material Forms",
   rawMaterials: [
     {
-      icon: "🔵",
       title: "BioMANS Beads",
       desc: "Pellet-form biobased material ready for injection moulding and extrusion.",
+      image: {
+        // Grain / pellet close-up — visually maps to biopolymer beads.
+        url: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=1600&q=80",
+        alt: "BioMANS beads — biopolymer pellets",
+      },
     },
     {
-      icon: "📄",
       title: "BioMANS Sheets",
       desc: "Flexible compostable sheets suitable for packaging and flat-form products.",
+      image: {
+        // Natural fibre / sheet texture — visually maps to bio-sheets.
+        url: "https://images.unsplash.com/photo-1574283005048-b3a3a93b3a44?w=1600&q=80",
+        alt: "BioMANS sheets — compostable bioplastic",
+      },
     },
   ],
 };
@@ -398,6 +411,103 @@ export const blogSectionFallback: BlogSectionData = {
   ctaHref: "/blog",
 };
 
+/* ---------- CONTRIBUTORS ---------- */
+export const contributorsSectionFallback: ContributorsSectionData = {
+  eyebrow: "Contributing to a Greener Planet",
+  title: "Brands choosing BioMANS over plastic",
+  message:
+    "These aren't just customers — they're partners switching to agro-waste materials and shrinking their plastic footprint with every order.",
+  // Three quick numbers — give the section weight + a story.
+  stats: [
+    { value: "20+", label: "Active contributors" },
+    { value: "12", label: "Industries served" },
+    { value: "1.4M+", label: "Plastic items replaced" },
+  ],
+};
+
+/**
+ * Default contributor list — used only until the editor adds the
+ * real ones in Sanity Studio. Plain text avatars with on-brand
+ * names so the marquee always looks populated.
+ */
+export const contributorsFallback: Contributor[] = [
+  { _id: "c1", name: "Earthly Co." },
+  { _id: "c2", name: "Sahyadri Naturals" },
+  { _id: "c3", name: "GreenWave Pack" },
+  { _id: "c4", name: "Nimbu Foods" },
+  { _id: "c5", name: "Bhumi Collective" },
+  { _id: "c6", name: "Aarogya Care" },
+  { _id: "c7", name: "Ahimsa Events" },
+  { _id: "c8", name: "Pune Plogger Co-op" },
+];
+
+/* ---------- TEAM ---------- */
+export const teamSectionFallback: TeamSectionData = {
+  eyebrow: "Meet the Team",
+  title: "The people behind| BioMANS |today",
+  description:
+    "A small group of scientists, engineers and entrepreneurs turning India's agricultural waste into the materials of tomorrow.",
+};
+
+export const teamMembersFallback: TeamMember[] = [
+  {
+    _id: "tm1",
+    name: "Dr. Amita Deshmukh",
+    role: "Founder & Chief Scientist",
+    bio:
+      "Polymer chemist who pioneered the BioMANS biopolymerisation process. Leads R&D across all bio-material lines.",
+    photo: {
+      url: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=800&q=80",
+      alt: "Dr. Amita Deshmukh",
+    },
+    socials: [
+      { platform: "linkedin", url: "https://linkedin.com" },
+    ],
+  },
+  {
+    _id: "tm2",
+    name: "Rohan Iyer",
+    role: "Co-Founder & COO",
+    bio:
+      "Operations and supply-chain specialist building partnerships with farmer collectives across Maharashtra.",
+    photo: {
+      url: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=800&q=80",
+      alt: "Rohan Iyer",
+    },
+    socials: [
+      { platform: "linkedin", url: "https://linkedin.com" },
+    ],
+  },
+  {
+    _id: "tm3",
+    name: "Priya Sharma",
+    role: "Head of Product",
+    bio:
+      "Designs the application portfolio — from bags and cutlery to medical sheets — with manufacturers and brands.",
+    photo: {
+      url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&q=80",
+      alt: "Priya Sharma",
+    },
+    socials: [
+      { platform: "linkedin", url: "https://linkedin.com" },
+    ],
+  },
+  {
+    _id: "tm4",
+    name: "Karan Mehta",
+    role: "Lead Process Engineer",
+    bio:
+      "Scales the BioMANS line from lab to factory, focusing on energy-efficient bio-extrusion and moulding.",
+    photo: {
+      url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80",
+      alt: "Karan Mehta",
+    },
+    socials: [
+      { platform: "linkedin", url: "https://linkedin.com" },
+    ],
+  },
+];
+
 /* ---------- VISION / MISSION ---------- */
 export const visionMissionFallback: VisionMissionData = {
   panels: [
@@ -474,6 +584,7 @@ export const footerFallback: FooterData = {
       title: "Company",
       links: [
         { label: "About Us", href: "#about" },
+        { label: "Our Team", href: "#team" },
         { label: "Vision & Mission", href: "#vision" },
         { label: "Contact", href: "#contact" },
       ],
@@ -517,6 +628,24 @@ export const siteSettingsFallback: SiteSettings = {
   gfEmailEntry: "entry.1000003",
   gfTopicEntry: "entry.1000004",
   gfMessageEntry: "entry.1000005",
+
+  // SEO defaults — overridden by Site Settings in Sanity.
+  metaTitle:
+    "WeWake IndiGreen — BioMANS, biodegradable material from agro-waste",
+  metaDescription:
+    "WeWake IndiGreen (WIGPL) converts crop residue into BioMANS — a 100% biodegradable, agro-waste based material replacing single-use plastic. Make in India · Clean Tech · Deep Tech.",
+  metaKeywords: [
+    "BioMANS",
+    "biodegradable material",
+    "agro waste",
+    "bioplastic",
+    "WeWake IndiGreen",
+    "clean tech India",
+    "compostable plastic alternative",
+    "SDG 6 SDG 9 SDG 12",
+  ],
+  ogImage: { url: "/images/logo.PNG", alt: "WeWake IndiGreen" },
+  siteUrl: "https://www.wewakeindigreen.com",
 };
 
 /**

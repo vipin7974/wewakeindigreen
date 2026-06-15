@@ -3,14 +3,28 @@
 /**
  * STORY ORBIT
  * --------------------------------------------------------------
- * Desktop  → animated canvas with orbiting nodes (hover/click).
+ * Desktop  → animated canvas with orbiting nodes (hover + click).
  * Mobile   → stacked card list (touch-friendly, no canvas math).
  *
- * Both render in the same component and the visibility is
- * controlled with CSS (`@media (max-width: 768px)`) — this lets
- * the component stay server-render-safe (no `window` checks).
+ * Both render in the same component; visibility is controlled
+ * with CSS at the `(max-width: 768px)` breakpoint.
  *
- * Orbit data is driven by Sanity (`story.orbitItems`).
+ * ANIMATION MODEL — important
+ * --------------------------------------------------------------
+ * Earlier version had each node interpolate its own angle and
+ * "snap to top" on hover, which made the node run away from the
+ * cursor and could overlap other nodes after a few hovers.
+ *
+ * The new model keeps every node's base angle fixed (evenly
+ * distributed around the circle) and uses a single shared
+ * `rotation` offset that ticks forward each frame. When a node
+ * is hovered the rotation pauses, the hovered node smoothly
+ * scales up + a glow ring fades in. On leave, rotation resumes.
+ *
+ * Net effect:
+ *   - nodes are ALWAYS evenly spaced (no overlap, ever)
+ *   - hovered node stays exactly under the cursor (easy to click)
+ *   - the orbit looks alive but never fights the user
  */
 
 import { useEffect, useRef, useState } from "react";
@@ -26,16 +40,25 @@ export type OrbitItem = {
 
 type Props = { items: OrbitItem[] };
 
+/* ---------- internal constants (canvas-space) ---------- */
+const W = 760;
+const H = 760;
+const CX = W / 2;
+const CY = H / 2;
+const ORBIT_R = 270;          // distance from centre → node
+const CENTER_R = 70;          // central globe radius
+const NODE_R = 46;            // node disc radius
+const HOVER_SCALE = 1.22;     // how big the hovered node grows
+const ROT_SPEED = 0.0022;     // global rotation when idle
+
 export default function StoryOrbit({ items }: Props) {
-  // Canvas + animation refs (kept across renders).
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const animationRef = useRef<number | null>(null);
 
-  // Which item the user clicked → popup state.
+  // Which item was clicked → popup state.
   const [selected, setSelected] = useState<OrbitItem | null>(null);
 
   useEffect(() => {
-    // Guard: no data → don't run the canvas loop.
     if (!items || items.length === 0) return;
 
     const canvas = canvasRef.current;
@@ -43,139 +66,175 @@ export default function StoryOrbit({ items }: Props) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Canvas drawing constants — internal coordinate space.
-    const W = 760;
-    const H = 760;
-    const CX = W / 2;
-    const CY = H / 2;
-    const ORBIT_R = 260;
-    const CENTER_R = 64;
-    const NODE_R = 42;
-
-    // Distribute nodes evenly around the orbit.
+    /* Node bookkeeping — base angle is FIXED (no drift). */
     const count = items.length;
     const nodes = items.map((d, i) => ({
       ...d,
-      angle: ((i * (360 / count) - 90) * Math.PI) / 180,
-      speed: 0.0025,
-      hovered: false,
+      // Base angle: evenly distributed, first node at the top.
+      base: ((i * (360 / count) - 90) * Math.PI) / 180,
+      // Current rendered scale — eased toward `targetScale` each frame.
       scale: 1,
-      targetScale: 1,
+      // Soft hover glow alpha (0 → 1) — eased toward target.
+      glow: 0,
     }));
 
+    // Shared rotation offset. Increments each frame when nothing is hovered.
+    let rotation = 0;
+    // Which node is hovered (-1 = none).
     let hoveredIdx = -1;
+    // Smoothed flag (0–1) used to pause rotation gently.
+    let pausedT = 0;
 
-    const nodeXY = (node: any) => ({
-      x: CX + Math.cos(node.angle) * ORBIT_R,
-      y: CY + Math.sin(node.angle) * ORBIT_R,
-    });
+    /* Coordinates for node `i` at current rotation. */
+    const nodeXY = (i: number) => {
+      const a = nodes[i].base + rotation;
+      return {
+        x: CX + Math.cos(a) * ORBIT_R,
+        y: CY + Math.sin(a) * ORBIT_R,
+      };
+    };
 
-    // Main draw routine — clears + redraws on each frame.
+    /* Draw routine — fully repaints the canvas each frame. */
     const draw = () => {
       ctx.clearRect(0, 0, W, H);
 
-      // OUTER decorative rings.
-      [320, 280, 240].forEach((r, i) => {
+      /* OUTER decorative rings (dashed) */
+      [330, 290, 250].forEach((r, i) => {
         ctx.beginPath();
         ctx.arc(CX, CY, r, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(155,125,212,${0.1 - i * 0.02})`;
+        ctx.strokeStyle = `rgba(155,125,212,${0.10 - i * 0.02})`;
         ctx.lineWidth = 1;
         ctx.setLineDash([8, 12]);
         ctx.stroke();
         ctx.setLineDash([]);
       });
 
-      // Lines from center to each node.
-      nodes.forEach((n) => {
-        const { x, y } = nodeXY(n);
+      /* SPARKLES — small drifting dots on a faint orbit */
+      const t = performance.now() / 1000;
+      for (let i = 0; i < 18; i++) {
+        const a = (i / 18) * Math.PI * 2 + t * 0.15;
+        const r = 220 + Math.sin(t * 0.6 + i) * 18;
+        const x = CX + Math.cos(a) * r;
+        const y = CY + Math.sin(a) * r;
+        ctx.beginPath();
+        ctx.arc(x, y, 1.6, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(192,168,232,${0.25 + 0.25 * Math.sin(t + i)})`;
+        ctx.fill();
+      }
+
+      /* CONNECTING beams center → node */
+      nodes.forEach((_, i) => {
+        const { x, y } = nodeXY(i);
         const gradient = ctx.createLinearGradient(CX, CY, x, y);
-        gradient.addColorStop(0, "rgba(155,125,212,0.25)");
+        gradient.addColorStop(0, "rgba(155,125,212,0.30)");
         gradient.addColorStop(1, "rgba(155,125,212,0)");
         ctx.beginPath();
         ctx.moveTo(CX, CY);
         ctx.lineTo(x, y);
         ctx.strokeStyle = gradient;
-        ctx.lineWidth = n.hovered ? 2 : 1;
+        ctx.lineWidth = hoveredIdx === i ? 2 : 1;
         ctx.stroke();
       });
 
-      // CENTER glow + orb.
-      const centerGradient = ctx.createRadialGradient(CX, CY, 0, CX, CY, 140);
-      centerGradient.addColorStop(0, "rgba(96,64,168,0.35)");
+      /* CENTER glow + orb */
+      const centerGradient = ctx.createRadialGradient(CX, CY, 0, CX, CY, 160);
+      centerGradient.addColorStop(0, "rgba(96,64,168,0.40)");
       centerGradient.addColorStop(1, "rgba(96,64,168,0)");
       ctx.beginPath();
-      ctx.arc(CX, CY, 140, 0, Math.PI * 2);
+      ctx.arc(CX, CY, 160, 0, Math.PI * 2);
       ctx.fillStyle = centerGradient;
       ctx.fill();
 
       ctx.beginPath();
       ctx.arc(CX, CY, CENTER_R, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(78,47,142,0.65)";
+      ctx.fillStyle = "rgba(78,47,142,0.70)";
       ctx.fill();
-      ctx.strokeStyle = "rgba(255,255,255,0.15)";
+      ctx.strokeStyle = "rgba(255,255,255,0.18)";
       ctx.stroke();
 
-      ctx.font = "54px serif";
+      ctx.font = "56px serif";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText("🌍", CX, CY + 4);
 
-      // NODES.
-      nodes.forEach((n) => {
-        const { x, y } = nodeXY(n);
-        n.scale += (n.targetScale - n.scale) * 0.12;
+      /* NODES */
+      nodes.forEach((n, i) => {
+        const { x, y } = nodeXY(i);
 
+        // Ease scale + glow toward their targets.
+        const targetScale = hoveredIdx === i ? HOVER_SCALE : 1;
+        const targetGlow = hoveredIdx === i ? 1 : 0;
+        n.scale += (targetScale - n.scale) * 0.16;
+        n.glow += (targetGlow - n.glow) * 0.12;
+
+        // Outer glow ring (fades in on hover).
+        if (n.glow > 0.02) {
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.scale(n.scale, n.scale);
+          const glowGrad = ctx.createRadialGradient(
+            0,
+            0,
+            NODE_R * 0.7,
+            0,
+            0,
+            NODE_R * 1.8
+          );
+          const accent = n.color || "#9b7dd4";
+          glowGrad.addColorStop(0, hexToRgba(accent, 0.45 * n.glow));
+          glowGrad.addColorStop(1, hexToRgba(accent, 0));
+          ctx.beginPath();
+          ctx.arc(0, 0, NODE_R * 1.8, 0, Math.PI * 2);
+          ctx.fillStyle = glowGrad;
+          ctx.fill();
+          ctx.restore();
+        }
+
+        // Node disc.
         ctx.save();
         ctx.translate(x, y);
         ctx.scale(n.scale, n.scale);
 
         const gradient = ctx.createRadialGradient(-10, -10, 4, 0, 0, NODE_R);
-        gradient.addColorStop(0, "rgba(96,64,168,0.65)");
-        gradient.addColorStop(1, "rgba(45,106,79,0.35)");
+        gradient.addColorStop(0, "rgba(96,64,168,0.78)");
+        gradient.addColorStop(1, "rgba(45,106,79,0.42)");
 
         ctx.beginPath();
         ctx.arc(0, 0, NODE_R, 0, Math.PI * 2);
         ctx.fillStyle = gradient;
         ctx.fill();
-        ctx.strokeStyle = "rgba(255,255,255,0.16)";
-        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = `rgba(255,255,255,${0.18 + 0.35 * n.glow})`;
+        ctx.lineWidth = 1.5 + n.glow * 1.2;
         ctx.stroke();
 
-        ctx.font = "34px serif";
+        // Icon.
+        ctx.font = "36px serif";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillText(n.icon ?? "", 0, 2);
 
+        // Label below the node.
         ctx.font = "700 12px Inter";
-        ctx.fillStyle = "rgba(255,255,255,0.68)";
-        ctx.fillText(n.label ?? "", 0, NODE_R + 24);
+        ctx.fillStyle = `rgba(255,255,255,${0.65 + 0.3 * n.glow})`;
+        ctx.fillText(n.label ?? "", 0, NODE_R + 26);
 
         ctx.restore();
       });
     };
 
-    // Animation loop.
+    /* Animation loop. */
     const animate = () => {
-      nodes.forEach((n, i) => {
-        if (hoveredIdx === i) {
-          n.targetScale = 1.28;
-          n.hovered = true;
-          const target = -Math.PI / 2;
-          let diff = target - n.angle;
-          diff = Math.atan2(Math.sin(diff), Math.cos(diff));
-          n.angle += diff * 0.06;
-        } else {
-          n.hovered = false;
-          n.targetScale = 1;
-          n.angle += n.speed;
-        }
-      });
+      // Smoothly transition pause factor (1 = paused, 0 = full speed).
+      const pauseTarget = hoveredIdx >= 0 ? 1 : 0;
+      pausedT += (pauseTarget - pausedT) * 0.18;
+
+      rotation += ROT_SPEED * (1 - pausedT);
       draw();
       animationRef.current = requestAnimationFrame(animate);
     };
     animate();
 
-    // Hit-test in canvas coords.
+    /* Hit-test: returns the index of the node under (mx, my), or -1. */
     const hitTest = (mx: number, my: number) => {
       const rect = canvas.getBoundingClientRect();
       const scaleX = W / rect.width;
@@ -183,7 +242,8 @@ export default function StoryOrbit({ items }: Props) {
       const cx = (mx - rect.left) * scaleX;
       const cy = (my - rect.top) * scaleY;
       for (let i = 0; i < nodes.length; i++) {
-        const { x, y } = nodeXY(nodes[i]);
+        const { x, y } = nodeXY(i);
+        // Use the current rendered scale so the hit area matches the visual.
         if (Math.hypot(cx - x, cy - y) < NODE_R * nodes[i].scale + 10) {
           return i;
         }
@@ -230,20 +290,19 @@ export default function StoryOrbit({ items }: Props) {
   if (!items || items.length === 0) return null;
 
   return (
-    <div className="relative flex justify-center w-full">
-      {/*
-       * DESKTOP — canvas orbit.
-       * Hidden on phones via CSS (.story-orbit-canvas-wrap).
-       */}
+    <div className="relative flex flex-col items-center w-full">
+      {/* DESKTOP — canvas orbit (hidden on phones via CSS). */}
       <div className="story-orbit-canvas-wrap">
         <canvas
           ref={canvasRef}
-          width={760}
-          height={760}
+          width={W}
+          height={H}
           className="story-orbit-canvas"
+          aria-label="Interactive orbit — hover or tap a planet to learn more"
+          role="img"
         />
 
-        {/* POPUP — only shown when canvas is clicked. */}
+        {/* POPUP shown when a node is clicked. */}
         {selected && (
           <div className="absolute inset-0 flex items-center justify-center z-50 px-4">
             <div className="story-popup-card">
@@ -269,18 +328,18 @@ export default function StoryOrbit({ items }: Props) {
         )}
       </div>
 
-      {/*
-       * MOBILE — stacked card list.
-       * Visible only on phones via CSS (.story-orbit-mobile).
-       * Each card shows the same content with no canvas math.
-       */}
+      {/* Small hint so first-time visitors know it's interactive. */}
+      <p className="story-orbit-hint">
+        Hover or tap a planet to learn more
+      </p>
+
+      {/* MOBILE — stacked card list (visible only on phones via CSS). */}
       <ul className="story-orbit-mobile">
         {items.map((item, i) => (
           <li
             key={`orbit-m-${i}`}
             className="story-orbit-mobile-card"
             style={{
-              // Use the editor's accent colour for the left bar.
               ["--accent" as any]: item.color || "#9b7dd4",
             }}
           >
@@ -301,4 +360,23 @@ export default function StoryOrbit({ items }: Props) {
       </ul>
     </div>
   );
+}
+
+/**
+ * Tiny hex → rgba helper.
+ * Accepts "#rrggbb" (or "#rgb"); falls back to a brand purple.
+ */
+function hexToRgba(hex: string, alpha: number): string {
+  let h = hex.replace("#", "").trim();
+  if (h.length === 3) {
+    h = h
+      .split("")
+      .map((c) => c + c)
+      .join("");
+  }
+  if (h.length !== 6) return `rgba(155,125,212,${alpha})`;
+  const r = parseInt(h.substring(0, 2), 16);
+  const g = parseInt(h.substring(2, 4), 16);
+  const b = parseInt(h.substring(4, 6), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
 }

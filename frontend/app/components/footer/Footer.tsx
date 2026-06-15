@@ -10,6 +10,7 @@
  */
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 
 import { FooterData } from "@/app/lib/sanity/types";
@@ -51,7 +52,7 @@ export default function Footer({ data }: Props) {
               transition={{ duration: 0.6 }}
               viewport={{ once: false, amount: 0.05 }}
             >
-              {/* Logo + brand name (CMS) */}
+              {/* Logo + brand name — uses the real WeWake IndiGreen mark */}
               <Link
                 href="/"
                 className="footer-logo"
@@ -62,8 +63,14 @@ export default function Footer({ data }: Props) {
                   }
                 }}
               >
-                <div className="footer-logo-gem">
-                  <div className="footer-logo-inner" />
+                <div className="footer-logo-img">
+                  <Image
+                    src="/images/logo.PNG"
+                    alt={`${footer.brandName ?? "WeWake IndiGreen"} logo`}
+                    width={48}
+                    height={48}
+                    className="object-contain"
+                  />
                 </div>
                 <span>{footer.brandName}</span>
               </Link>

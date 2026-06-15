@@ -38,9 +38,20 @@ export default defineType({
         {
           type: 'object',
           fields: [
-            defineField({name: 'icon', title: 'Icon (emoji)', type: 'string'}),
+            // Main photo of the raw material. Editors can upload an image
+            // OR paste a URL — both are handled by the shared `imageOrUrl`
+            // shape and the `resolveImage` helper on the frontend.
+            defineField({name: 'image', title: 'Image', type: 'imageOrUrl'}),
             defineField({name: 'title', title: 'Title', type: 'string'}),
             defineField({name: 'desc', title: 'Description', type: 'text'}),
+            // Legacy emoji icon — kept hidden in studio so old documents
+            // don't error. The frontend no longer renders it.
+            defineField({
+              name: 'icon',
+              title: 'Icon (legacy)',
+              type: 'string',
+              hidden: true,
+            }),
           ],
         },
       ],

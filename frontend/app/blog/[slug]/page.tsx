@@ -15,6 +15,7 @@
 /* Render fresh on every request so editor saves appear at once. */
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { PortableText } from "@portabletext/react";
@@ -24,9 +25,47 @@ import { ArrowLeft, ArrowRight, Clock, Calendar } from "lucide-react";
 import LiveRefresh from "../../components/shared/LiveRefresh";
 import { client } from "../../lib/sanity/client";
 import { urlFor } from "../../lib/sanity/image";
-import { singleBlogQuery } from "../../lib/sanity/queries";
+import {
+  singleBlogQuery,
+  siteSettingsQuery,
+} from "../../lib/sanity/queries";
+import { buildMetadata } from "../../lib/seo";
 
 type Props = { params: Promise<{ slug: string }> };
+
+/**
+ * Per-post SEO — uses the blog's title, excerpt and cover image.
+ * Falls back gracefully when any field is missing.
+ */
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const [site, post] = await Promise.all([
+    client.fetch(siteSettingsQuery),
+    client.fetch(singleBlogQuery, { slug }),
+  ]);
+
+  if (!post) return buildMetadata(site, { path: `/blog/${slug}` });
+
+  // Try to derive a cover image URL for OG/Twitter cards.
+  let coverUrl: string | undefined;
+  if (post.coverImage) {
+    try {
+      coverUrl = urlFor(post.coverImage).width(1200).height(630).url();
+    } catch {
+      coverUrl = undefined;
+    }
+  }
+  if (!coverUrl && post.externalCoverImage) {
+    coverUrl = post.externalCoverImage;
+  }
+
+  return buildMetadata(site, {
+    title: `${post.title} — WeWake IndiGreen`,
+    description: post.excerpt ?? undefined,
+    path: `/blog/${slug}`,
+    imageUrl: coverUrl,
+  });
+}
 
 /**
  * PORTABLE TEXT — custom renderers

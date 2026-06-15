@@ -16,6 +16,7 @@
 /* Render fresh on every request — admin saves appear immediately. */
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
@@ -24,11 +25,27 @@ import { client } from "../lib/sanity/client";
 import {
   blogsQuery,
   blogSectionQuery,
+  siteSettingsQuery,
 } from "../lib/sanity/queries";
 import { blogSectionFallback, withFallback } from "../lib/sanity/fallbacks";
 import { splitTitle } from "../lib/util";
+import { buildMetadata } from "../lib/seo";
 
 import AllArticlesGrid, { AllArticlesBlog } from "./AllArticlesGrid";
+
+/**
+ * Page-level SEO — overrides the homepage defaults so /blog
+ * shows a tailored title + description in search results.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  const site = await client.fetch(siteSettingsQuery);
+  return buildMetadata(site, {
+    title: "Stories from the field — WeWake IndiGreen",
+    description:
+      "Articles, research and case studies on BioMANS, biopolymers, agro-waste upcycling and the work behind a plastic-free India.",
+    path: "/blog",
+  });
+}
 
 export default async function AllArticlesPage() {
   // Fetch posts + editorial copy in parallel.

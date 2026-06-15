@@ -21,8 +21,10 @@ import About from "./components/about/About";
 import Story from "./components/story/Story";
 import Biom from "./components/biom/Biom";
 import ProductsSection from "./components/products/Products";
+import Contributors from "./components/contributors/Contributors";
 import SdgSection from "./components/sdg/SdgSection";
 import BlogSection from "./components/blog/BlogSection";
+import Team from "./components/team/Team";
 import VisionMissionSection from "./components/vision/VisionMissionSection";
 import ContactSection from "./components/contact/ContactSection";
 import Footer from "./components/footer/Footer";
@@ -39,8 +41,12 @@ import {
   biomQuery,
   productsSectionQuery,
   productsQuery,
+  contributorsSectionQuery,
+  contributorsQuery,
   sdgQuery,
   blogSectionQuery,
+  teamSectionQuery,
+  teamMembersQuery,
   visionMissionQuery,
   contactQuery,
   footerQuery,
@@ -59,8 +65,12 @@ export default async function HomePage() {
     biom,
     productsSection,
     products,
+    contributorsSection,
+    contributors,
     sdg,
     blogSection,
+    teamSection,
+    teamMembers,
     visionMission,
     contact,
     footer,
@@ -75,8 +85,12 @@ export default async function HomePage() {
     client.fetch(biomQuery),
     client.fetch(productsSectionQuery),
     client.fetch(productsQuery),
+    client.fetch(contributorsSectionQuery),
+    client.fetch(contributorsQuery),
     client.fetch(sdgQuery),
     client.fetch(blogSectionQuery),
+    client.fetch(teamSectionQuery),
+    client.fetch(teamMembersQuery),
     client.fetch(visionMissionQuery),
     client.fetch(contactQuery),
     client.fetch(footerQuery),
@@ -96,6 +110,11 @@ export default async function HomePage() {
       <ProductsSection section={productsSection} products={products} />
       <SdgSection data={sdg} />
       <BlogSection blogs={blogs} section={blogSection} />
+      <Team section={teamSection} members={teamMembers} />
+      <Contributors
+        section={contributorsSection}
+        contributors={contributors}
+      />
       <VisionMissionSection data={visionMission} />
       <ContactSection data={contact} site={site} />
       <Footer data={footer} />

@@ -33,7 +33,12 @@ export const siteSettingsQuery = groq`
     gfLastNameEntry,
     gfEmailEntry,
     gfTopicEntry,
-    gfMessageEntry
+    gfMessageEntry,
+    metaTitle,
+    metaDescription,
+    metaKeywords,
+    "ogImage": ogImage${IMG},
+    siteUrl
   }
 `;
 
@@ -106,7 +111,12 @@ export const biomQuery = groq`
     paragraph2,
     features,
     rawMaterialsTitle,
-    rawMaterials[]{icon, title, desc}
+    rawMaterials[]{
+      icon,
+      title,
+      desc,
+      "image": image${IMG}
+    }
   }
 `;
 
@@ -160,6 +170,49 @@ export const blogSectionQuery = groq`
     title,
     ctaLabel,
     ctaHref
+  }
+`;
+
+/* ---------- CONTRIBUTORS ---------- */
+// Editorial copy for the marquee strip.
+export const contributorsSectionQuery = groq`
+  *[_type == "contributorsSection"][0]{
+    eyebrow,
+    title,
+    message,
+    stats[]{value, label}
+  }
+`;
+
+// Logo/name list (ordered by the editor).
+export const contributorsQuery = groq`
+  *[_type == "contributor"] | order(order asc){
+    _id,
+    name,
+    url,
+    "logo": logo${IMG}
+  }
+`;
+
+/* ---------- TEAM ---------- */
+// Editorial copy (eyebrow / title / description) for the section.
+export const teamSectionQuery = groq`
+  *[_type == "teamSection"][0]{
+    eyebrow,
+    title,
+    description
+  }
+`;
+
+// The actual team members, ordered by the editor-defined index.
+export const teamMembersQuery = groq`
+  *[_type == "teamMember"] | order(order asc){
+    _id,
+    name,
+    role,
+    bio,
+    "photo": photo${IMG},
+    socials[]{platform, url}
   }
 `;
 
