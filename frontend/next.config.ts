@@ -3,15 +3,14 @@
  * --------------------------------------------------------------
  * - `images.remotePatterns` allow-lists the CDNs we load from.
  *
- * - `experimental.staleTimes` disables the App Router's in-memory
- *   client cache. Without this, when a user navigates from `/`
- *   to `/blog` and clicks Back, Next.js can restore a frozen
- *   snapshot of the page without re-running its server component
- *   or re-firing framer-motion's `whileInView` observers. The
- *   visible symptom was sections rendering blank until a manual
- *   refresh. Setting both to 0 means every navigation re-renders
- *   from the server, keeping content in sync with Sanity and
- *   animations playing correctly.
+ * - `experimental.staleTimes` tunes the App Router's in-memory
+ *   client cache. Setting `dynamic: 0` means dynamic pages are
+ *   re-fetched from the server on every navigation (so framer-
+ *   motion components remount and Sanity edits show up).
+ *   `static` has a Next.js-enforced minimum of 30 seconds — using
+ *   anything lower triggers a build warning. 30 is the safest
+ *   valid floor; static routes (robots.txt, sitemap.xml, /_not-found)
+ *   are rebuilt at most every 30s after navigation.
  */
 import type { NextConfig } from "next";
 
@@ -26,7 +25,7 @@ const nextConfig: NextConfig = {
   experimental: {
     staleTimes: {
       dynamic: 0,
-      static: 0,
+      static: 30,
     },
   },
 };
