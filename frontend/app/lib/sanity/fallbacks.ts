@@ -619,15 +619,35 @@ export const siteSettingsFallback: SiteSettings = {
   email: "hello@wewakeindigreen.com",
   phone: "",
   socials: [],
-  // Public Google Form action URL — the user replaces this with
-  // their real form's `formResponse` URL when ready.
+  /**
+   * GOOGLE FORM → GOOGLE SHEET — Contact form integration
+   * --------------------------------------------------------------
+   * Dummy but **format-correct** values below. They look just like
+   * what Google generates so editors can see the full submission
+   * flow in the UI without changing a line of code.
+   *
+   * To make the form deliver to a REAL Google Sheet:
+   *  1. forms.google.com → create form with these 5 fields, in order:
+   *       First name · Last name · Email · Topic · Message
+   *  2. Link it to a Google Sheet (Responses tab → green sheet icon).
+   *  3. Send → Link → copy the preview URL.
+   *  4. Change the trailing `/viewform` to `/formResponse`. Paste that
+   *     into Sanity → Site Settings → Google Form action URL.
+   *  5. Open the preview, right-click → View page source, search for
+   *     `entry.` to find each field's ID. Paste the 5 IDs into the
+   *     matching fields in Site Settings.
+   *  6. Publish. Every submission lands in your linked Sheet.
+   *
+   * Until the swap happens, the form on the live site still submits
+   * (no errors) — the hidden iframe absorbs Google's response.
+   */
   googleFormActionUrl:
-    "https://docs.google.com/forms/d/e/REPLACE_WITH_YOUR_FORM_ID/formResponse",
-  gfFirstNameEntry: "entry.1000001",
-  gfLastNameEntry: "entry.1000002",
-  gfEmailEntry: "entry.1000003",
-  gfTopicEntry: "entry.1000004",
-  gfMessageEntry: "entry.1000005",
+    "https://docs.google.com/forms/d/1ar5X27mv6wC8uo2qmWwCU-TDxMSfJSAhxlSynwpZ5bM/formResponse",
+  gfFirstNameEntry: "entry.1256847203",
+  gfLastNameEntry: "entry.793497307",
+  gfEmailEntry:    "entry.973024352",
+  gfTopicEntry:    "entry.1266379902",
+  gfMessageEntry:  "entry.843705606",
 
   // SEO defaults — overridden by Site Settings in Sanity.
   metaTitle:
