@@ -50,9 +50,13 @@ export default defineType({
     //   ],
     // }),
 
-    // Image collage on the right.
+    // Three-image collage on the right.
+    //  - image1: the big card (top-left, asymmetric)
+    //  - image2: smaller card (bottom-right, overlaps)
+    //  - image3: third card (bottom-left, added for the SDG trio)
     defineField({name: 'image1', title: 'Image 1 (large)', type: 'imageOrUrl'}),
     defineField({name: 'image2', title: 'Image 2 (small)', type: 'imageOrUrl'}),
+    defineField({name: 'image3', title: 'Image 3 (small)', type: 'imageOrUrl'}),
 
     // Floating "3 UN SDGs Addressed" card.
     defineField({name: 'sdgCardNumber', title: 'SDG card big number', type: 'string'}),
