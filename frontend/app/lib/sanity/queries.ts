@@ -253,7 +253,8 @@ export const footerQuery = groq`
     copyright,
     columns[]{title, links[]{label, href}},
     bottomText,
-    bottomBadge
+    bottomBadge,
+    "bottomBadgeImage": bottomBadgeImage${IMG}
   }
 `;
 

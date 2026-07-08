@@ -101,7 +101,7 @@ export default function AboutSection({ data }: Props) {
             </div>
 
             {/* STAT BARS (CMS array) */}
-            <div className="mt-12 lg:mt-14 space-y-8">
+            {/* <div className="mt-12 lg:mt-14 space-y-8">
               {(about.stats ?? []).map((item, index) => (
                 <motion.div
                   key={item.label}
@@ -109,19 +109,19 @@ export default function AboutSection({ data }: Props) {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.08 }}
                   viewport={{ once: false, amount: 0.05 }}
-                >
+                > */}
                   {/* Bar label + value */}
-                  <div className="flex items-center justify-between mb-3">
+                  {/* <div className="flex items-center justify-between mb-3">
                     <span className="text-sm font-semibold text-[#1a0f30]/70">
                       {item.label}
                     </span>
                     <span className="text-sm font-black text-[#6040a8]">
                       {item.value}
                     </span>
-                  </div>
+                  </div> */}
 
                   {/* Bar track */}
-                  <div className="h-[12px] rounded-full bg-[#ede7fb] overflow-hidden">
+                  {/* <div className="h-[12px] rounded-full bg-[#ede7fb] overflow-hidden">
                     <div
                       className="h-full rounded-full bg-gradient-to-r from-[#6040a8] to-[#40916c]"
                       style={{ width: item.width ?? "0%" }}
@@ -129,7 +129,7 @@ export default function AboutSection({ data }: Props) {
                   </div>
                 </motion.div>
               ))}
-            </div>
+            </div> */}
           </div>
 
           {/* RIGHT — image collage */}

@@ -34,21 +34,21 @@ export default defineType({
     }),
 
     // Stat bars. `width` is a CSS width (e.g. "78%") used for the fill bar.
-    defineField({
-      name: 'stats',
-      title: 'Stat bars',
-      type: 'array',
-      of: [
-        {
-          type: 'object',
-          fields: [
-            defineField({name: 'label', title: 'Label', type: 'string'}),
-            defineField({name: 'value', title: 'Value', type: 'string'}),
-            defineField({name: 'width', title: 'Bar width (e.g. "78%")', type: 'string'}),
-          ],
-        },
-      ],
-    }),
+    // defineField({
+    //   name: 'stats',
+    //   title: 'Stat bars',
+    //   type: 'array',
+    //   of: [
+    //     {
+    //       type: 'object',
+    //       fields: [
+    //         defineField({name: 'label', title: 'Label', type: 'string'}),
+    //         defineField({name: 'value', title: 'Value', type: 'string'}),
+    //         defineField({name: 'width', title: 'Bar width (e.g. "78%")', type: 'string'}),
+    //       ],
+    //     },
+    //   ],
+    // }),
 
     // Image collage on the right.
     defineField({name: 'image1', title: 'Image 1 (large)', type: 'imageOrUrl'}),
