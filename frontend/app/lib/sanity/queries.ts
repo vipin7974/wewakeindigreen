@@ -89,7 +89,8 @@ export const aboutQuery = groq`
     "image2": image2${IMG},
     "image3": image3${IMG},
     sdgCardNumber,
-    sdgCardLabel
+    sdgCardLabel,
+    "sdgIcons": sdgIcons[]${IMG}
   }
 `;
 
@@ -139,7 +140,11 @@ export const productsQuery = groq`
     subtitle,
     impact,
     "cardKey": cardKey.current,
-    "image": image${IMG},
+    "images": images[]${IMG},
+    // Pre-migration docs still store their old single image under
+    // the legacy "image" key — surfaced separately so the frontend
+    // can fall back to it as a 1-slide carousel until re-edited.
+    "legacyImage": image${IMG},
     "modalImage": modalImage${IMG},
     modalTitle,
     modalSubtitle,

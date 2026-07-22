@@ -79,6 +79,7 @@ export type AboutData = {
   image3?: ImageOrUrl;
   sdgCardNumber?: string;
   sdgCardLabel?: string;
+  sdgIcons?: ImageOrUrl[];
 };
 
 export type StoryData = {
@@ -116,7 +117,9 @@ export type Product = {
   subtitle?: string;
   impact?: string;
   cardKey?: string;
-  image?: ImageOrUrl;
+  images?: ImageOrUrl[];
+  /** Legacy single-image value from before the `images` carousel field existed. */
+  legacyImage?: ImageOrUrl;
   modalImage?: ImageOrUrl;
   modalTitle?: string;
   modalSubtitle?: string;

@@ -37,8 +37,7 @@ export const navbarFallback: NavbarData = {
   links: [
     { label: "About", href: "#about" },
     { label: "Plastic Crisis", href: "#story" },
-    { label: "BioMANS", href: "#products" },
-    { label: "SDG Goals", href: "#sdg" },
+    { label: "Products", href: "#products" },
     { label: "Blog", href: "#blog" },
     { label: "Team", href: "#team" },
     { label: "Vision", href: "#vision" },
@@ -102,19 +101,21 @@ export const aboutFallback: AboutData = {
   // Three-image collage — one per UN SDG the company advances.
   // Each image also acts as a link to the #sdg section below.
   image1: {
-    url: "/images/sdg1.png",
-    alt: "SDG 6 — Clean Water & Sanitation",
+    url: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=900&q=80",
+    alt: "Indian farmer",
   },
   image2: {
-    url: "/images/sdg9.png",
-    alt: "SDG 9 — Industry, Innovation & Infrastructure",
-  },
-  image3: {
-    url: "/images/sdg12.png",
-    alt: "SDG 12 — Responsible Consumption & Production",
+    url: "/images/about2.jpeg",
+    alt: "Green plant",
   },
   sdgCardNumber: "3",
   sdgCardLabel: "UN SDGs Addressed",
+  // Floating SDG icon squares beside the collage — matches sdgCardLabel's "3".
+  sdgIcons: [
+    {url: "/images/sdg1.png", alt: "SDG 1 — No Poverty"},
+    {url: "/images/sdg9.png", alt: "SDG 9 — Industry, Innovation & Infrastructure"},
+    {url: "/images/sdg12.png", alt: "SDG 12 — Responsible Consumption & Production"},
+  ],
 };
 
 /* ---------- STORY ---------- */
@@ -200,7 +201,10 @@ export const productsFallback: Product[] = [
     title: "Carry Bag",
     subtitle: "Drop-in replacement for HDPE plastic bags",
     impact: "Saves 2.3kg CO₂/kg vs plastic",
-    image: { url: "https://images.unsplash.com/photo-1591768793355-74d04bb6608f?w=900&q=80" },
+    images: [
+      { url: "https://images.unsplash.com/photo-1591768793355-74d04bb6608f?w=900&q=80" },
+      { url: "https://images.unsplash.com/photo-1591768793355-74d04bb6608f?w=1200&q=80" },
+    ],
     modalImage: { url: "https://images.unsplash.com/photo-1591768793355-74d04bb6608f?w=1200&q=80" },
     modalTitle: "BioMANS Carry Bag",
     modalSubtitle: "Complete replacement for HDPE & LDPE single-use plastic bags",
@@ -241,7 +245,10 @@ export const productsFallback: Product[] = [
     title: "Disposable Cutlery",
     subtitle: "Fork, knife, spoon — fully compostable",
     impact: "Zero toxins in landfill",
-    image: { url: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=900&q=80" },
+    images: [
+      { url: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=900&q=80" },
+      { url: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=1200&q=80" },
+    ],
     modalImage: { url: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=1200&q=80" },
     modalTitle: "BioMANS Disposable Cutlery",
     modalSubtitle: "Fork, knife, spoon — food-safe, heat-resistant, 28-day compostable",
@@ -271,7 +278,10 @@ export const productsFallback: Product[] = [
     title: "BioMANS Bowl",
     subtitle: "Sturdy, heat-resistant, fully bio",
     impact: "Replaces 12g plastic per bowl",
-    image: { url: "https://images.unsplash.com/photo-1490818387583-1baba5e638af?w=900&q=80" },
+    images: [
+      { url: "https://images.unsplash.com/photo-1490818387583-1baba5e638af?w=900&q=80" },
+      { url: "https://images.unsplash.com/photo-1490818387583-1baba5e638af?w=1200&q=80" },
+    ],
     modalImage: { url: "https://images.unsplash.com/photo-1490818387583-1baba5e638af?w=1200&q=80" },
     modalTitle: "BioMANS Bowl",
     modalSubtitle: "Heat-resistant biodegradable serving bowl",
@@ -301,7 +311,10 @@ export const productsFallback: Product[] = [
     title: "Cotton Earbuds",
     subtitle: "BioMANS stem replaces polypropylene",
     impact: "1.5B plastic stems avoided/year",
-    image: { url: "https://images.unsplash.com/photo-1606906568585-f3a0e7b96e9e?w=900&q=80" },
+    images: [
+      { url: "https://images.unsplash.com/photo-1606906568585-f3a0e7b96e9e?w=900&q=80" },
+      { url: "https://images.unsplash.com/photo-1606906568585-f3a0e7b96e9e?w=1200&q=80" },
+    ],
     modalImage: { url: "https://images.unsplash.com/photo-1606906568585-f3a0e7b96e9e?w=1200&q=80" },
     modalTitle: "Cotton Earbuds",
     modalSubtitle: "Plastic-free biodegradable earbuds",
@@ -324,7 +337,10 @@ export const productsFallback: Product[] = [
     title: "Bib & Medical Sheet",
     subtitle: "Medical & industrial grade bioplastic",
     impact: "Safe for skin contact",
-    image: { url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&q=80" },
+    images: [
+      { url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&q=80" },
+      { url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80" },
+    ],
     modalImage: { url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80" },
     modalTitle: "Bib & Medical Sheet",
     modalSubtitle: "Medical-grade biodegradable sheet material",
@@ -347,7 +363,10 @@ export const productsFallback: Product[] = [
     title: "Event Lanyard",
     subtitle: "Leaves zero trace after the event",
     impact: "Biodegrades after event lifecycle",
-    image: { url: "https://images.unsplash.com/photo-1587440871875-191322ee64b0?w=900&q=80" },
+    images: [
+      { url: "https://images.unsplash.com/photo-1587440871875-191322ee64b0?w=900&q=80" },
+      { url: "https://images.unsplash.com/photo-1587440871875-191322ee64b0?w=1200&q=80" },
+    ],
     modalImage: { url: "https://images.unsplash.com/photo-1587440871875-191322ee64b0?w=1200&q=80" },
     modalTitle: "Event Lanyard",
     modalSubtitle: "Zero-trace biodegradable event accessory",
